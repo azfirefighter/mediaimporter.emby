@@ -265,6 +265,9 @@ class Server:
         headers = Request.PrepareApiCallHeaders(authToken=self.AccessToken(), userId=self.UserId(), deviceId=self._devideId)
         return function(url, headers, *args)
 
+    def BuildPluginUrl(self):
+        return self.BuildUrl(constants.URL_PLUGINS)
+
     def _authenticate(self):
         if not self.Authenticate():
             log('user authentication failed on media provider {}'.format(self._id))
