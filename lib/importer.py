@@ -30,6 +30,7 @@ from emby.request import Request
 from emby.server import Server
 
 from lib import kodi
+from lib.settings import ImportSettings
 from lib.utils import __addon__, localise, log, mediaProvider2str, Url, utc
 
 # list of fields to retrieve
@@ -70,15 +71,6 @@ def mediaTypesFromOptions(options):
         mediaTypes = options['mediatypes[]']
 
     return mediaTypes
-
-def getLibraryViewsFromSettings(importSettings):
-    if not importSettings:
-        raise ValueError('invalid importSettings')
-
-    if not importSettings.getString(emby.constants.SETTING_IMPORT_VIEWS) == emby.constants.SETTING_IMPORT_VIEWS_OPTION_SPECIFIC:
-        return []
-
-    return importSettings.getStringList(emby.constants.SETTING_IMPORT_VIEWS_SPECIFIC)
 
 def getMatchingLibraryViews(embyServer, mediaTypes, selectedViews):
     if not embyServer:
@@ -323,7 +315,7 @@ def isImportReady(handle, options):
     # check if authentication works with the current provider settings
     if embyServer.Authenticate():
         # check if the chosen library views exist
-        selectedViews = getLibraryViewsFromSettings(importSettings)
+        selectedViews = ImportSettings.GetLibraryViews(importSettings)
         matchingViews = getMatchingLibraryViews(embyServer, mediaImport.getMediaTypes(), selectedViews)
         importReady = len(matchingViews) > 0
 
@@ -435,7 +427,7 @@ def execImport(handle, options):
     baseUrl = Url.addOptions(baseUrl, baseUrlOptions)
 
     # get all (matching) library views
-    selectedViews = getLibraryViewsFromSettings(importSettings)
+    selectedViews = ImportSettings.GetLibraryViews(importSettings)
     views = getMatchingLibraryViews(embyServer, mediaTypes, selectedViews)
     if not views:
         log('cannot retrieve items without any library views', xbmc.LOGERROR)
