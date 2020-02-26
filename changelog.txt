@@ -7,6 +7,7 @@
 - download the server's icon to avoid unsupported HTTP HEAD requests
 - support displaying server messages as notifications
 - support fast synchronization after a successful initial full synchronization
+- add an import-specific setting to force a full synchronization
 
 [B]Version 0.0.5[/B]
 - make Direct Play configurable
